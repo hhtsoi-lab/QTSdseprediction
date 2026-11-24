@@ -3,115 +3,135 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>HKDSE 數學科成績預測｜請老師改返測驗名稱</title>
+<title>HKDSE 成績預測｜數學科（必修部分）｜測試版</title>
 <style>
 *{box-sizing:border-box}
 body{margin:0;background:#eef2f7;color:#1f2937;font-family:"Microsoft JhengHei","PingFang HK","Noto Sans HK",system-ui,sans-serif;line-height:1.6}
 header{background:#12305a;color:#fff;padding:14px 16px}
 header h1{margin:0;font-size:1.15rem}
 header .sub{color:#cfe0ff;font-size:.85rem}
-main{max-width:760px;margin:0 auto;padding:14px}
+main{max-width:900px;margin:0 auto;padding:14px}
 .card{background:#fff;border:1px solid #dbe3ec;border-radius:12px;padding:16px;margin-bottom:14px}
 .card.live{border:2px solid #12305a}
 h2{margin:0 0 10px;font-size:1.02rem;color:#12305a}
+.hint{color:#64748b;font-size:.86rem}
+.warn{background:#fef3c7;color:#92400e;border-radius:10px;padding:10px 12px;font-size:.88rem;margin-bottom:14px}
+.ok{background:#dcfce7;color:#14532d;border-radius:10px;padding:10px 12px;font-size:.88rem;margin-bottom:14px}
 label{display:block;font-size:.9rem;font-weight:600;color:#33415c;margin-bottom:4px}
 input{width:100%;padding:11px;font-size:1.05rem;border:1px solid #cbd5e1;border-radius:8px}
 input:focus{outline:2px solid #12305a}
 .row{display:flex;gap:12px;flex-wrap:wrap}
-.row>div{flex:1 1 180px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
-.badge{display:inline-block;min-width:88px;text-align:center;font-size:1.9rem;font-weight:800;padding:8px 12px;border-radius:10px;letter-spacing:1px}
+.row>div{flex:1 1 170px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
 .level-card{text-align:center}
 .level-card .detail{margin-top:10px;font-size:.9rem;color:#475569;text-align:left}
 .flex{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
-.flex .detail{flex:1 1 240px;font-size:.92rem;color:#33415c}
-table{width:100%;border-collapse:collapse;font-size:.88rem}
+.flex .detail{flex:1 1 250px;font-size:.92rem;color:#33415c}
+table{width:100%;border-collapse:collapse;font-size:.86rem}
 th,td{border-bottom:1px solid #dbe3ec;padding:6px;text-align:center}
 th:first-child,td:first-child{text-align:left}
 thead th{background:#f1f5f9;color:#12305a}
-.hint{color:#64748b;font-size:.85rem}
-.warn{background:#fef3c7;color:#92400e;border-radius:10px;padding:10px 12px;font-size:.88rem;margin-bottom:14px}
+.badge{display:inline-block;min-width:86px;text-align:center;font-size:1.8rem;font-weight:800;padding:8px 12px;border-radius:10px;letter-spacing:1px}
 button{border:0;border-radius:8px;padding:10px 18px;font-size:.95rem;font-weight:700;background:#12305a;color:#fff;cursor:pointer}
+button.ghost{background:#fff;color:#33415c;border:1px solid #cbd5e1;font-weight:600}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.tab{padding:8px 13px;border-radius:8px;border:1px solid #dbe3ec;background:#fff;font-size:.9rem;cursor:pointer;color:#12305a}
+.tab.on{background:#12305a;color:#fff;border-color:#12305a;font-weight:700}
+.tab.off{opacity:.5;cursor:not-allowed;text-decoration:none}
+.tag{font-size:.72rem;padding:1px 7px;border-radius:999px;background:#e2e8f0;color:#33415c;margin-left:6px}
+.copy-box{width:100%;padding:8px;font-size:.82rem;border:1px dashed #cbd5e1;border-radius:8px;background:#f8fafc}
 footer{text-align:center;color:#64748b;font-size:.78rem;padding:8px 14px 26px}
 </style>
 </head>
 <body>
 <header>
-  <h1>HKDSE 數學科成績預測器</h1>
-  <div class="sub">請老師改返測驗名稱｜cut off 更新：2026-11-23 15:15（測試覆蓋後還原）</div>
+  <h1>HKDSE 成績預測器</h1>
+  <div class="sub" id="subhead"></div>
 </header>
 <main>
-  <div class="warn" id="demoWarn" style="display:none">注意：呢個檔案入面係<strong>示範 cut off</strong>，請老師喺桌面版輸入實際分數後重新產生。</div>
-
+  <div id="notice"></div>
+  <div class="tabs" id="tabs"></div>
   <div class="card">
-    <h2>輸入你的分數</h2>
-    <div class="row"><div><label for="in0">卷一（滿分 105）</label><input type="number" inputmode="decimal" step="0.5" min="0" max="105" id="in0" placeholder="例如 50 = Level 3"></div><div><label for="in1">卷二（滿分 45）</label><input type="number" inputmode="decimal" step="0.5" min="0" max="45" id="in1" placeholder="例如 25 = Level 3"></div></div>
-    <div style="margin-top:12px">
-      <button type="button" onclick="resetAll()">清空重填</button>
-      <span class="hint" style="margin-left:8px">一邊輸入一邊計，唔使撳掣</span>
+    <h2 id="subjectTitle"></h2>
+    <div class="row" id="inputs"></div>
+    <div class="row" style="margin-top:12px">
+      <div><button type="button" onclick="resetAll()">清空重填</button></div>
+      <div><span class="hint">一邊輸入一邊計，唔使撳掣</span></div>
     </div>
   </div>
-
-  <div class="grid" id="paperCards"><div class="card level-card"><span class="badge" id="b0" style="background:#e2e8f0;color:#33415c">－</span><div class="detail" id="d0">卷一｜請輸入分數</div></div><div class="card level-card"><span class="badge" id="b1" style="background:#e2e8f0;color:#33415c">－</span><div class="detail" id="d1">卷二｜請輸入分數</div></div></div>
-
-  <div class="card live" style="margin-top:14px">
+  <div class="grid" id="cards"></div>
+  <div class="card live">
     <h2>最終成績（整體）</h2>
     <div class="flex">
       <span class="badge" id="ovBadge" style="background:#e2e8f0;color:#33415c">－</span>
-      <div class="detail" id="ovDetail">請輸入兩卷分數</div>
+      <div class="detail" id="ovDetail">請輸入全部卷數嘅分數</div>
     </div>
   </div>
-
   <div class="card">
-    <h2>本年 Cut Off 一覽</h2>
-    <table><thead><tr><th>級別</th><th>卷一<br><span class="hint">滿分 105</span></th><th>卷二<br><span class="hint">滿分 45</span></th><th>整體<br><span class="hint">滿分 100</span></th></tr></thead><tbody><tr><td>★ Level 5 或以上</td><td>80</td><td>35</td><td>76.75</td></tr><tr><td>Level 4</td><td>70</td><td>31</td><td>67.44</td></tr><tr><td>Level 3</td><td>50</td><td>25</td><td>50.4</td></tr><tr><td>Level 2</td><td>30</td><td>18</td><td>32.57</td></tr><tr><td>Level 1</td><td>12</td><td>10</td><td>15.21</td></tr><tr><td>U（不合格）</td><td>低於 12</td><td>低於 10</td><td>低於 15.21</td></tr><tr><td>滿分</td><td>105</td><td>45</td><td>100</td></tr></tbody></table>
+    <h2>Cut Off 一覽</h2>
+    <div id="table"></div>
     <p class="hint" id="methodNote"></p>
   </div>
-
+  <div class="card">
+    <h2>分享呢個結果</h2>
+    <p class="hint">複製下面嘅連結，對方一開就見到同樣嘅科目同分數。</p>
+    <input class="copy-box" id="shareBox" readonly onclick="this.select()">
+  </div>
   <p class="hint">只按老師輸入嘅 cut off 做等第對照，唔係考評局官方成績。所有計算喺你自己嘅裝置完成，冇上傳任何資料。</p>
 </main>
-<footer>產生日期：2026-11-23｜HKDSE 數學科成績預測器（靜態版）</footer>
+<footer>產生日期：2026-11-24｜cut off 更新：2026-11-24 11:55</footer>
 
 <script>
-const DATA = {"version": 2, "subject": "數學科（必修部分）", "exam_name": "請老師改返測驗名稱", "confirmed": true, "updated_at": "2026-11-23 15:15（測試覆蓋後還原）", "papers": [{"id": "paper1", "name": "卷一", "full_mark": 105, "cutoffs": {"5": 80, "4": 70, "3": 50, "2": 30, "1": 12}}, {"id": "paper2", "name": "卷二", "full_mark": 45, "cutoffs": {"5": 35, "4": 31, "3": 25, "2": 18, "1": 10}}], "overall": {"mode": "auto", "method": "weighted", "weights": {"paper1": 65, "paper2": 35}, "cap": "none", "confirmed": true, "cutoffs": {"5": 76.75, "4": 67.44, "3": 50.4, "2": 32.57, "1": 15.21}}};
+const DATA = {"version": 3, "exam_name": "數學科（必修部分）｜測試版", "updated_at": "2026-11-24 11:55", "active_subject": "math", "subjects": [{"id": "chinese", "name": "中國語文", "result_type": "levels", "confirmed": false, "papers": [{"id": "paper1", "name": "卷一", "full_mark": 100, "cutoffs": {"5": null, "4": null, "3": null, "2": null, "1": null}}, {"id": "paper2", "name": "卷二", "full_mark": 100, "cutoffs": {"5": null, "4": null, "3": null, "2": null, "1": null}}], "overall": {"mode": "auto", "method": "weighted", "weights": {"paper1": 50, "paper2": 50}, "cap": "none", "confirmed": false, "cutoffs": {"5": null, "4": null, "3": null, "2": null, "1": null}}}, {"id": "english", "name": "英國語文", "result_type": "levels", "confirmed": false, "papers": [{"id": "paper1", "name": "卷一", "full_mark": 100, "cutoffs": {"5": null, "4": null, "3": null, "2": null, "1": null}}, {"id": "paper2", "name": "卷二", "full_mark": 100, "cutoffs": {"5": null, "4": null, "3": null, "2": null, "1": null}}, {"id": "paper3", "name": "卷三", "full_mark": 100, "cutoffs": {"5": null, "4": null, "3": null, "2": null, "1": null}}, {"id": "paper4", "name": "卷四", "full_mark": 100, "cutoffs": {"5": null, "4": null, "3": null, "2": null, "1": null}}], "overall": {"mode": "auto", "method": "weighted", "weights": {"paper1": 25, "paper2": 25, "paper3": 25, "paper4": 25}, "cap": "none", "confirmed": false, "cutoffs": {"5": null, "4": null, "3": null, "2": null, "1": null}}}, {"id": "math", "name": "數學科（必修部分）", "result_type": "levels", "confirmed": true, "papers": [{"id": "paper1", "name": "卷一", "full_mark": 105, "cutoffs": {"5": 80, "4": 70, "3": 50, "2": 30, "1": 12}}, {"id": "paper2", "name": "卷二", "full_mark": 45, "cutoffs": {"5": 35, "4": 31, "3": 25, "2": 18, "1": 10}}], "overall": {"mode": "auto", "method": "weighted", "weights": {"paper1": 65, "paper2": 35}, "cap": "none", "confirmed": true, "cutoffs": {"5": 76.75, "4": 67.44, "3": 50.4, "2": 32.57, "1": 15.21}}}, {"id": "cbs", "name": "公民與社會發展科", "result_type": "pass_fail", "confirmed": false, "papers": [{"id": "paper1", "name": "卷一", "full_mark": 100, "cutoffs": {"pass": null}}], "overall": {"mode": "auto", "method": "weighted", "weights": {"paper1": 100}, "cap": "none", "confirmed": false, "cutoffs": {"pass": null}}}, {"id": "hes", "name": "健康管理與社會關懷", "result_type": "levels", "confirmed": false, "papers": [{"id": "paper1", "name": "卷一", "full_mark": 100, "cutoffs": {"5": null, "4": null, "3": null, "2": null, "1": null}}, {"id": "paper2", "name": "卷二", "full_mark": 100, "cutoffs": {"5": null, "4": null, "3": null, "2": null, "1": null}}], "overall": {"mode": "auto", "method": "weighted", "weights": {"paper1": 50, "paper2": 50}, "cap": "none", "confirmed": false, "cutoffs": {"5": null, "4": null, "3": null, "2": null, "1": null}}}, {"id": "chem", "name": "化學", "result_type": "levels", "confirmed": false, "papers": [{"id": "paper1", "name": "卷一", "full_mark": 100, "cutoffs": {"5": null, "4": null, "3": null, "2": null, "1": null}}, {"id": "paper2", "name": "卷二", "full_mark": 100, "cutoffs": {"5": null, "4": null, "3": null, "2": null, "1": null}}], "overall": {"mode": "auto", "method": "weighted", "weights": {"paper1": 50, "paper2": 50}, "cap": "none", "confirmed": false, "cutoffs": {"5": null, "4": null, "3": null, "2": null, "1": null}}}, {"id": "phys", "name": "物理", "result_type": "levels", "confirmed": false, "papers": [{"id": "paper1", "name": "卷一", "full_mark": 100, "cutoffs": {"5": null, "4": null, "3": null, "2": null, "1": null}}, {"id": "paper2", "name": "卷二", "full_mark": 100, "cutoffs": {"5": null, "4": null, "3": null, "2": null, "1": null}}], "overall": {"mode": "auto", "method": "weighted", "weights": {"paper1": 50, "paper2": 50}, "cap": "none", "confirmed": false, "cutoffs": {"5": null, "4": null, "3": null, "2": null, "1": null}}}, {"id": "bio", "name": "生物", "result_type": "levels", "confirmed": false, "papers": [{"id": "paper1", "name": "卷一", "full_mark": 100, "cutoffs": {"5": null, "4": null, "3": null, "2": null, "1": null}}, {"id": "paper2", "name": "卷二", "full_mark": 100, "cutoffs": {"5": null, "4": null, "3": null, "2": null, "1": null}}], "overall": {"mode": "auto", "method": "weighted", "weights": {"paper1": 50, "paper2": 50}, "cap": "none", "confirmed": false, "cutoffs": {"5": null, "4": null, "3": null, "2": null, "1": null}}}, {"id": "ict", "name": "資訊及通訊科技", "result_type": "levels", "confirmed": false, "papers": [{"id": "paper1", "name": "卷一", "full_mark": 100, "cutoffs": {"5": null, "4": null, "3": null, "2": null, "1": null}}, {"id": "paper2", "name": "卷二", "full_mark": 100, "cutoffs": {"5": null, "4": null, "3": null, "2": null, "1": null}}], "overall": {"mode": "auto", "method": "weighted", "weights": {"paper1": 50, "paper2": 50}, "cap": "none", "confirmed": false, "cutoffs": {"5": null, "4": null, "3": null, "2": null, "1": null}}}, {"id": "econ", "name": "經濟", "result_type": "levels", "confirmed": false, "papers": [{"id": "paper1", "name": "卷一", "full_mark": 100, "cutoffs": {"5": null, "4": null, "3": null, "2": null, "1": null}}, {"id": "paper2", "name": "卷二", "full_mark": 100, "cutoffs": {"5": null, "4": null, "3": null, "2": null, "1": null}}], "overall": {"mode": "auto", "method": "weighted", "weights": {"paper1": 50, "paper2": 50}, "cap": "none", "confirmed": false, "cutoffs": {"5": null, "4": null, "3": null, "2": null, "1": null}}}, {"id": "m1", "name": "數學延伸部分（M1）", "result_type": "levels", "confirmed": false, "papers": [{"id": "paper1", "name": "卷一", "full_mark": 100, "cutoffs": {"5": null, "4": null, "3": null, "2": null, "1": null}}], "overall": {"mode": "auto", "method": "weighted", "weights": {"paper1": 100}, "cap": "none", "confirmed": false, "cutoffs": {"5": null, "4": null, "3": null, "2": null, "1": null}}}, {"id": "m2", "name": "數學延伸部分（M2）", "result_type": "levels", "confirmed": false, "papers": [{"id": "paper1", "name": "卷一", "full_mark": 100, "cutoffs": {"5": null, "4": null, "3": null, "2": null, "1": null}}], "overall": {"mode": "auto", "method": "weighted", "weights": {"paper1": 100}, "cap": "none", "confirmed": false, "cutoffs": {"5": null, "4": null, "3": null, "2": null, "1": null}}}, {"id": "chih", "name": "中國歷史", "result_type": "levels", "confirmed": false, "papers": [{"id": "paper1", "name": "卷一", "full_mark": 100, "cutoffs": {"5": null, "4": null, "3": null, "2": null, "1": null}}, {"id": "paper2", "name": "卷二", "full_mark": 100, "cutoffs": {"5": null, "4": null, "3": null, "2": null, "1": null}}], "overall": {"mode": "auto", "method": "weighted", "weights": {"paper1": 50, "paper2": 50}, "cap": "none", "confirmed": false, "cutoffs": {"5": null, "4": null, "3": null, "2": null, "1": null}}}, {"id": "bafs", "name": "企業、會計與財務概論", "result_type": "levels", "confirmed": false, "papers": [{"id": "paper1", "name": "卷一", "full_mark": 100, "cutoffs": {"5": null, "4": null, "3": null, "2": null, "1": null}}, {"id": "paper2", "name": "卷二", "full_mark": 100, "cutoffs": {"5": null, "4": null, "3": null, "2": null, "1": null}}], "overall": {"mode": "auto", "method": "weighted", "weights": {"paper1": 50, "paper2": 50}, "cap": "none", "confirmed": false, "cutoffs": {"5": null, "4": null, "3": null, "2": null, "1": null}}}, {"id": "hist", "name": "歷史", "result_type": "levels", "confirmed": false, "papers": [{"id": "paper1", "name": "卷一", "full_mark": 100, "cutoffs": {"5": null, "4": null, "3": null, "2": null, "1": null}}, {"id": "paper2", "name": "卷二", "full_mark": 100, "cutoffs": {"5": null, "4": null, "3": null, "2": null, "1": null}}], "overall": {"mode": "auto", "method": "weighted", "weights": {"paper1": 50, "paper2": 50}, "cap": "none", "confirmed": false, "cutoffs": {"5": null, "4": null, "3": null, "2": null, "1": null}}}, {"id": "tl", "name": "科技與生活", "result_type": "levels", "confirmed": false, "papers": [{"id": "paper1", "name": "卷一", "full_mark": 100, "cutoffs": {"5": null, "4": null, "3": null, "2": null, "1": null}}, {"id": "paper2", "name": "卷二", "full_mark": 100, "cutoffs": {"5": null, "4": null, "3": null, "2": null, "1": null}}], "overall": {"mode": "auto", "method": "weighted", "weights": {"paper1": 50, "paper2": 50}, "cap": "none", "confirmed": false, "cutoffs": {"5": null, "4": null, "3": null, "2": null, "1": null}}}]};
 const LEVELS = ["5", "4", "3", "2", "1"];
+const PASS_LEVELS = ["pass"];
 const LEVEL_LABEL = {"5":"Level 5 或以上","4":"Level 4","3":"Level 3","2":"Level 2","1":"Level 1","U":"U（未達 Level 1）"};
 const LEVEL_BADGE = {"5":"L5+","4":"L4","3":"L3","2":"L2","1":"L1","U":"U"};
-const LEVEL_COLOR = {"5":["#0f6b3f","#ffffff"],"4":["#22a06b","#ffffff"],"3":["#2b7fd4","#ffffff"],"2":["#e8a33d","#1b1b1b"],"1":["#e2703a","#ffffff"],"U":["#c62828","#ffffff"]};
+const PF_LABEL = {"pass":"達標（及格）","fail":"未達標（不合格）"};
+const PF_BADGE = {"pass":"達標","fail":"未達標"};
+const COLORS = {"5":["#0f6b3f","#ffffff"],"4":["#22a06b","#ffffff"],"3":["#2b7fd4","#ffffff"],"2":["#e8a33d","#1b1b1b"],"1":["#e2703a","#ffffff"],"U":["#c62828","#ffffff"],"pass":["#0f6b3f","#ffffff"],"fail":["#c62828","#ffffff"],"none":["#6b7280","#ffffff"]};
 const CAP_LABEL = {"none":"不設限制（只按總分）","lower":"不可高於較低的那一卷","lower_plus1":"不可高於較低的那一卷 +1 級"};
 
-const fmt = v => (v === null || v === undefined || v === "") ? "－" : (Math.round(v * 100) / 100).toString();
-const toNumber = t => {
+const levelsOf = s => s.result_type === "pass_fail" ? PASS_LEVELS : LEVELS;
+const failOf = s => s.result_type === "pass_fail" ? "fail" : "U";
+const labelOf = (s, k) => (s.result_type === "pass_fail" ? PF_LABEL[k] : LEVEL_LABEL[k]) || k;
+const badgeOf = (s, k) => (s.result_type === "pass_fail" ? PF_BADGE[k] : LEVEL_BADGE[k]) || k;
+const colorOf = k => COLORS[k] || COLORS.none;
+const fmt = v => (v === null || v === undefined || v === "") ? "－" : String(Math.round(v * 100) / 100);
+
+function toNumber(t) {
   if (t === null || t === undefined) return null;
   const s = String(t).trim().replace(/[,，]/g, "");
   if (s === "") return null;
   const n = Number(s);
   return Number.isFinite(n) ? n : null;
-};
+}
 
-function sortedCutoffs(cutoffs) {
-  return LEVELS.map(l => [l, cutoffs[l]])
-    .filter(p => p[1] !== null && p[1] !== undefined)
+function sortedCutoffs(cutoffs, levels) {
+  return levels.map(l => [l, cutoffs[l]]).filter(p => p[1] !== null && p[1] !== undefined)
     .sort((a, b) => b[1] - a[1]);
 }
 
-function predict(score, full, cutoffs) {
-  const out = {score, full, percent:null, level:null, badge:"－", label:"", note:"", gap:null, gapTo:null, error:""};
+function predict(score, full, cutoffs, subject) {
+  const levels = levelsOf(subject);
+  const pairs = sortedCutoffs(cutoffs, levels);
+  const out = {score, full, percent: null, level: null, badge: "－", label: "", note: "", gap: null, gapTo: null, error: ""};
   if (score === null) { out.note = "請輸入分數"; return out; }
   if (full && score > full) { out.error = "分數不可超過滿分 " + fmt(full) + " 分"; return out; }
   if (score < 0) { out.error = "分數不可為負數"; return out; }
   if (full) out.percent = score / full * 100;
-  const pairs = sortedCutoffs(cutoffs);
-  if (!pairs.length) { out.note = "未設定 cut off"; return out; }
-  let idx = pairs.findIndex(p => score >= p[1]);
+  if (!pairs.length) { out.note = "老師尚未輸入 cut off"; return out; }
+
+  const idx = pairs.findIndex(p => score >= p[1]);
   if (idx === -1) {
     const [lowLevel, lowCut] = pairs[pairs.length - 1];
-    out.level = "U"; out.badge = "U"; out.label = LEVEL_LABEL["U"];
+    const fk = failOf(subject);
+    out.level = fk; out.badge = badgeOf(subject, fk); out.label = labelOf(subject, fk);
     out.gap = Math.ceil(lowCut - score); out.gapTo = lowLevel;
-    out.note = "未達 Level 1（" + fmt(lowCut) + " 分），仲差 " + out.gap + " 分";
+    out.note = "未達 " + labelOf(subject, lowLevel) + "（" + fmt(lowCut) + " 分），仲差 " + out.gap + " 分";
   } else {
     const [level, cut] = pairs[idx];
-    out.level = level; out.badge = LEVEL_BADGE[level]; out.label = LEVEL_LABEL[level];
+    out.level = level; out.badge = badgeOf(subject, level); out.label = labelOf(subject, level);
     out.note = fmt(cut) + " 分或以上";
     if (idx > 0) { out.gap = Math.ceil(pairs[idx - 1][1] - score); out.gapTo = pairs[idx - 1][0]; }
     else out.note += "（已達最高級別）";
@@ -119,147 +139,281 @@ function predict(score, full, cutoffs) {
   return out;
 }
 
-function overallCutoffs() {
-  const o = DATA.overall;
-  if (o.mode === "manual" && o.confirmed) return {cutoffs: o.cutoffs, source: "老師自訂嘅總分 cut off", full: o.method === "weighted" ? 100 : totalFull()};
-  const derived = {};
-  for (const level of LEVELS) {
+const totalFull = s => s.papers.reduce((sum, p) => sum + (p.full_mark || 0), 0);
+const overallFull = s => s.overall.method === "weighted" ? 100 : totalFull(s);
+
+function derivedCutoffs(s) {
+  const out = {};
+  for (const level of levelsOf(s)) {
     let total = 0, ok = true;
-    for (const p of DATA.papers) {
+    for (const p of s.papers) {
       const c = p.cutoffs[level], full = p.full_mark;
       if (c === null || c === undefined || !full) { ok = false; break; }
-      total += o.method === "weighted" ? c / full * (o.weights[p.id] || 0) : c;
+      total += s.overall.method === "weighted" ? c / full * (s.overall.weights[p.id] || 0) : c;
     }
-    if (ok) derived[level] = Math.round(total * 100) / 100;
+    if (ok) out[level] = Math.floor(total * 100) / 100;   // 向下取準，同 core.py 一致
   }
-  if (!Object.keys(derived).length) return null;
-  const weights = DATA.papers.map(p => p.name + " " + (o.weights[p.id] || 0) + "%").join("、");
-  const source = o.method === "weighted" ? "自動推算（加權百分比，" + weights + "）" : "自動推算（兩卷 cut off 相加）";
-  return {cutoffs: derived, source, full: o.method === "weighted" ? 100 : totalFull()};
+  return out;
 }
 
-const totalFull = () => DATA.papers.reduce((s, p) => s + (p.full_mark || 0), 0);
-const rankOf = l => l === "U" ? LEVELS.length : LEVELS.indexOf(l);
-
-function computeOverall(scores) {
-  const o = DATA.overall;
-  const view = o.mode === "off" ? null : overallCutoffs();
-  if (!view) return {enabled:false, note: o.mode === "off" ? "老師設定：只分卷顯示，不設整體評級" : "未能推算整體 cut off"};
-  if (scores.some(s => s === null)) return {enabled:true, note:"請輸入全部 " + DATA.papers.length + " 份卷嘅分數", source:view.source};
-
-  let total;
-  if (o.method === "weighted") {
-    total = DATA.papers.reduce((s, p) => s + scores[DATA.papers.indexOf(p)] / p.full_mark * (o.weights[p.id] || 0), 0);
-  } else {
-    total = scores.reduce((s, v) => s + v, 0);
+function overallView(s) {
+  const o = s.overall;
+  if (o.mode === "off") return {enabled: false, source: "老師設定：只分卷顯示，不設整體評級", cutoffs: null, full: overallFull(s)};
+  if (o.mode === "manual") {
+    if (!o.confirmed || !sortedCutoffs(o.cutoffs, levelsOf(s)).length)
+      return {enabled: false, source: "老師尚未輸入該科嘅總分 cut off", cutoffs: null, full: overallFull(s)};
+    return {enabled: true, source: "老師自訂嘅總分 cut off", cutoffs: o.cutoffs, full: overallFull(s)};
   }
-  const r = predict(total, view.full, view.cutoffs);
-  if (r.error) return {enabled:true, error:r.error, source:view.source};
+  const derived = derivedCutoffs(s);
+  if (!Object.keys(derived).length)
+    return {enabled: false, source: "該卷嘅 cut off 未填齊，未能自動推算整體 cut off", cutoffs: null, full: overallFull(s)};
+  let source;
+  if (o.method === "weighted") {
+    const weights = s.papers.map(p => p.name + " " + (o.weights[p.id] || 0) + "%").join("、");
+    source = "自動推算（加權百分比，" + weights + "）";
+  } else {
+    source = "自動推算（各卷 cut off 相加）";
+  }
+  return {enabled: true, source, cutoffs: derived, full: overallFull(s)};
+}
 
-  const perPaper = DATA.papers.map((p, i) => predict(scores[i], p.full_mark, p.cutoffs));
-  const ranks = perPaper.map(p => rankOf(p.level));
+function totalScore(s, scores) {
+  const missing = s.papers.filter(p => scores[p.id] === null).map(p => p.name);
+  if (missing.length) return {value: null, message: "未輸入：" + missing.join("、")};
+  if (s.overall.method === "weighted") {
+    let total = 0;
+    for (const p of s.papers) total += scores[p.id] / p.full_mark * (s.overall.weights[p.id] || 0);
+    return {value: total, message: ""};
+  }
+  return {value: s.papers.reduce((sum, p) => sum + scores[p.id], 0), message: ""};
+}
+
+function liftAdvice(need, s, scores) {
+  return s.papers.map(p => {
+    const perMark = s.overall.method === "weighted" ? (s.overall.weights[p.id] || 0) / p.full_mark : 1;
+    if (perMark <= 0) return null;
+    const add = Math.ceil(need / perMark);
+    const room = p.full_mark - scores[p.id];
+    return add > room
+      ? p.name + "：就算攞盡剩低嘅 " + fmt(room) + " 分都未夠升一級"
+      : p.name + "：加多 " + add + " 分（" + fmt(scores[p.id]) + " → " + fmt(scores[p.id] + add) + " 分）";
+  }).filter(Boolean);
+}
+
+function computeOverall(s, scores) {
+  const view = overallView(s);
+  if (!view.enabled) return {enabled: false, note: view.source};
+  const total = totalScore(s, scores);
+  if (total.value === null) return {enabled: true, note: total.message, source: view.source};
+
+  const r = predict(total.value, view.full, view.cutoffs, s);
+  if (r.error) return {enabled: true, error: r.error, source: view.source};
+
+  const perPaper = s.papers.map(p => predict(scores[p.id], p.full_mark, p.cutoffs, s));
+  const ranks = perPaper.map(p => p.level === failOf(s) ? levelsOf(s).length : levelsOf(s).indexOf(p.level));
   const weakest = ranks.indexOf(Math.max(...ranks));
-  let bottleneck = (new Set(ranks).size > 1)
-    ? "較弱一卷：" + DATA.papers[weakest].name + "（" + LEVEL_LABEL[perPaper[weakest].level] + "）"
-    : "兩卷級別一致";
+  const bottleneck = (new Set(ranks).size > 1)
+    ? "較弱一卷：" + s.papers[weakest].name + "（" + labelOf(s, perPaper[weakest].level) + "）"
+    : "各卷級別一致";
 
   let level = r.level, badge = r.badge, label = r.label, note = r.note, gap = r.gap, gapTo = r.gapTo, capped = "";
-  if (o.cap !== "none") {
-    const pairs = sortedCutoffs(view.cutoffs);
-    const allowed = o.cap === "lower" ? ranks[weakest] : Math.max(0, ranks[weakest] - 1);
+  const pairs = sortedCutoffs(view.cutoffs, levelsOf(s));
+  const cap = s.overall.cap;
+  const rankOf = lv => lv === failOf(s) ? levelsOf(s).length : levelsOf(s).indexOf(lv);
+  if (cap !== "none") {
+    let allowed = rankOf(perPaper[weakest].level);
+    if (cap === "lower_plus1") allowed = Math.max(0, allowed - 1);
     if (rankOf(level) < allowed) {
-      const original = LEVEL_LABEL[level];
-      const cl = allowed < pairs.length ? pairs[allowed][0] : "U";
-      capped = "總分已達 " + original + "，但按規則「" + CAP_LABEL[o.cap] + "」最終以 " + LEVEL_LABEL[cl] + " 計算";
-      level = cl; badge = LEVEL_BADGE[cl]; label = LEVEL_LABEL[cl]; note = "受較低一卷限制"; gap = null; gapTo = null;
+      const original = labelOf(s, level);
+      const cl = allowed < pairs.length ? pairs[allowed][0] : failOf(s);
+      capped = "總分已達 " + original + "，但按規則「" + CAP_LABEL[cap] + "」最終以 " + labelOf(s, cl) + " 計算";
+      level = cl; badge = badgeOf(s, cl); label = labelOf(s, cl); note = "受較低嘅一卷限制"; gap = null; gapTo = null;
     }
   }
 
-  let lift = [];
-  if (!capped && gap !== null && gap > 0) {
-    const pairs = sortedCutoffs(view.cutoffs);
-    const target = pairs[Math.min(rankOf(level), pairs.length) - 1];
-    if (target) {
-      const need = target[1] - total;
-      if (need > 0 && o.cap === "none") {
-        lift = DATA.papers.map((p, i) => {
-          const perMark = o.method === "weighted" ? (o.weights[p.id] || 0) / p.full_mark : 1;
-          const add = Math.ceil(need / perMark);
-          const room = p.full_mark - scores[i];
-          return add > room
-            ? p.name + "：就算攞盡剩低嘅 " + fmt(room) + " 分都未夠升一級"
-            : p.name + "：加多 " + add + " 分（" + fmt(scores[i]) + " → " + fmt(scores[i] + add) + " 分）";
-        });
+  const lift = [];
+  if (!capped) {
+    const rank = rankOf(level);
+    if (rank && pairs.length) {
+      const target = pairs[Math.min(rank, pairs.length) - 1];
+      const need = target[1] - total.value;
+      if (need > 0) {
+        gap = Math.ceil(need); gapTo = target[0];
+        if (cap === "none") lift.push(...liftAdvice(need, s, scores));
       }
     }
   }
-  return {enabled:true, total, full:view.full, level, badge, label, note, gap, gapTo, capped, bottleneck, lift, source:view.source, percent: total / view.full * 100};
+  return {enabled: true, total: total.value, full: view.full, level, badge, label, note, gap, gapTo, lift, capped, bottleneck, source: view.source};
+}
+
+function subjectReady(s) {
+  const levels = levelsOf(s);
+  return s.papers.every(p => levels.every(l => p.cutoffs[l] !== null && p.cutoffs[l] !== undefined))
+    && s.papers.every(p => p.full_mark > 0) && !s.papers.some(p => !p.cutoffs[levels[0]] && p.cutoffs[levels[0]] !== 0);
+}
+
+let current = null;
+
+function renderTabs() {
+  const box = document.getElementById("tabs");
+  box.innerHTML = "";
+  for (const s of DATA.subjects) {
+    const el = document.createElement("div");
+    const ready = subjectReady(s);
+    el.className = "tab" + (s.id === current.id ? " on" : "") + (ready ? "" : " off");
+    el.innerHTML = s.name + (ready ? "" : '<span class="tag">未填</span>');
+    if (ready) el.onclick = () => selectSubject(s.id);
+    box.appendChild(el);
+  }
+}
+
+function renderInputs() {
+  const s = current;
+  document.getElementById("subjectTitle").textContent = s.name + "｜" + s.papers.length + " 份卷";
+  const box = document.getElementById("inputs");
+  box.innerHTML = "";
+  s.papers.forEach((p, i) => {
+    const div = document.createElement("div");
+    div.innerHTML = '<label for="in' + i + '">' + p.name + "（滿分 " + fmt(p.full_mark) + "）</label>"
+      + '<input type="number" inputmode="decimal" step="0.5" min="0" max="' + p.full_mark + '" id="in' + i + '">'
+      + '<div class="hint" style="margin-top:4px">' + labelOf(s, "3") + " 約 " + fmt(p.cutoffs["3"] ?? p.cutoffs["pass"]) + " 分</div>";
+    box.appendChild(div);
+    div.querySelector("input").addEventListener("input", paint);
+  });
+}
+
+function renderTable() {
+  const s = current;
+  const view = overallView(s);
+  const levels = levelsOf(s);
+  let head = "<tr><th>級別</th>";
+  for (const p of s.papers) head += "<th>" + p.name + "<br><span class='hint'>滿分 " + fmt(p.full_mark) + "</span></th>";
+  if (view.enabled) head += "<th>整體<br><span class='hint'>滿分 " + fmt(view.full) + "</span></th>";
+  head += "</tr>";
+
+  let rows = "";
+  levels.forEach((level, i) => {
+    let cells = "<td>" + (i === 0 ? "★ " : "") + labelOf(s, level) + "</td>";
+    for (const p of s.papers) cells += "<td>" + fmt(p.cutoffs[level]) + "</td>";
+    if (view.enabled) cells += "<td>" + fmt(view.cutoffs[level]) + "</td>";
+    rows += "<tr>" + cells + "</tr>";
+  });
+  const lowest = levels[levels.length - 1];
+  let failCells = "<td>" + labelOf(s, failOf(s)) + "</td>";
+  for (const p of s.papers) failCells += "<td>低於 " + fmt(p.cutoffs[lowest]) + "</td>";
+  if (view.enabled) failCells += "<td>低於 " + fmt(view.cutoffs[lowest]) + "</td>";
+  rows += "<tr>" + failCells + "</tr>";
+
+  let fullCells = "<td>滿分</td>";
+  for (const p of s.papers) fullCells += "<td>" + fmt(p.full_mark) + "</td>";
+  if (view.enabled) fullCells += "<td>" + fmt(view.full) + "</td>";
+  rows += "<tr>" + fullCells + "</tr>";
+
+  document.getElementById("table").innerHTML = "<table><thead>" + head + "</thead><tbody>" + rows + "</tbody></table>";
+  document.getElementById("methodNote").textContent = view.enabled
+    ? "整體：" + view.source + "。低於 " + labelOf(s, lowest) + " 即屬 " + labelOf(s, failOf(s)) + "。"
+    : view.source + "。";
 }
 
 function paint() {
-  const scores = DATA.papers.map((p, i) => toNumber(document.getElementById("in" + i).value));
-  DATA.papers.forEach((p, i) => {
-    const r = predict(scores[i], p.full_mark, p.cutoffs);
-    const badge = document.getElementById("b" + i), detail = document.getElementById("d" + i);
-    if (r.error) { badge.textContent = "?"; badge.style.background = "#6b7280"; badge.style.color = "#fff"; detail.innerHTML = p.name + "｜" + r.error; return; }
-    if (!r.level) { badge.textContent = "－"; badge.style.background = "#e2e8f0"; badge.style.color = "#33415c"; detail.innerHTML = p.name + "｜" + (r.note || "請輸入分數"); return; }
-    const c = LEVEL_COLOR[r.level];
-    badge.textContent = r.badge; badge.style.background = c[0]; badge.style.color = c[1];
-    let html = "<b>" + p.name + "｜" + fmt(r.score) + " / " + fmt(r.full) + " 分</b><br>";
-    if (r.percent !== null) html += "得分率 " + r.percent.toFixed(1) + "%｜" + r.label + "（" + r.note + "）<br>";
-    if (r.level === "U") html += "加多 " + r.gap + " 分先合格，繼續努力！";
-    else if (r.gap) html += "再進步 " + r.gap + " 分 → " + LEVEL_LABEL[r.gapTo];
-    else html += "已經係最高級別，繼續保持！";
-    detail.innerHTML = html;
+  const s = current;
+  const scores = {};
+  const box = document.getElementById("cards");
+  box.innerHTML = "";
+  s.papers.forEach((p, i) => {
+    const raw = document.getElementById("in" + i).value;
+    const score = toNumber(raw);
+    scores[p.id] = score;
+    const r = predict(score, p.full_mark, p.cutoffs, s);
+    if (raw.trim() && score === null) r.error = "請輸入有效嘅數字";
+
+    const card = document.createElement("div");
+    card.className = "card level-card";
+    const c = r.error ? colorOf("none") : (r.level ? colorOf(r.level) : colorOf("none"));
+    let detail;
+    if (r.error) detail = p.name + "｜" + r.error;
+    else if (!r.level) detail = p.name + "｜" + (r.note || "請輸入分數");
+    else {
+      let html = "<b>" + p.name + "｜" + fmt(r.score) + " / " + fmt(r.full) + " 分</b><br>";
+      if (r.percent !== null) html += "得分率 " + r.percent.toFixed(1) + "%｜" + r.label + "（" + r.note + "）<br>";
+      if (r.gap) html += (r.level === failOf(s) ? "加多 " + r.gap + " 分先合格，繼續努力！" : "再進步 " + r.gap + " 分 → " + labelOf(s, r.gapTo));
+      else html += "已經係最高級別，繼續保持！";
+      detail = html;
+    }
+    card.innerHTML = '<span class="badge" style="background:' + c[0] + ';color:' + c[1] + '">'
+      + (r.error ? "?" : (r.badge || "－")) + "</span><div class='detail'>" + detail + "</div>";
+    box.appendChild(card);
   });
 
-  const ov = computeOverall(scores);
+  const ov = computeOverall(s, scores);
   const badge = document.getElementById("ovBadge"), detail = document.getElementById("ovDetail");
-  if (!ov.enabled || ov.level === undefined || (!ov.total && ov.total !== 0)) {
-    badge.textContent = "－"; badge.style.background = "#e2e8f0"; badge.style.color = "#33415c";
-    detail.textContent = ov.note || ov.error || "請輸入兩卷分數";
-    if (ov.error) { badge.textContent = "?"; badge.style.background = "#6b7280"; badge.style.color = "#fff"; detail.textContent = ov.error; }
+  if (!ov.enabled || !ov.level) {
+    badge.textContent = ov.error ? "?" : "－";
+    badge.style.background = ov.error ? colorOf("none")[0] : "#e2e8f0";
+    badge.style.color = ov.error ? colorOf("none")[1] : "#33415c";
+    detail.textContent = ov.error || ov.note || "請輸入全部卷數嘅分數";
     return;
   }
-  if (!ov.level) {
-    badge.textContent = "－"; badge.style.background = "#e2e8f0"; badge.style.color = "#33415c";
-    detail.textContent = ov.note || "請輸入分數"; return;
-  }
-  const c = LEVEL_COLOR[ov.level];
+  const c = colorOf(ov.level);
   badge.textContent = ov.badge; badge.style.background = c[0]; badge.style.color = c[1];
-  let html = "<b>總分 " + ov.total.toFixed(1) + " / " + fmt(ov.full) + "　→　" + ov.label + "</b>（" + ov.note + "）<br>";
-  html += ov.source + "<br>";
+  let html = "<b>總分 " + ov.total.toFixed(1) + " / " + fmt(ov.full) + "　→　" + ov.label + "</b>（" + ov.note + "）<br>" + ov.source + "<br>";
   if (ov.bottleneck) html += ov.bottleneck + "<br>";
   if (ov.capped) html += '<span style="color:#991b1b">' + ov.capped + "</span><br>";
-  else if (ov.lift && ov.lift.length) html += "想升一級（只提升其中一卷）：" + ov.lift.join("；") + "<br>";
-  else if (ov.level === "U" && ov.gap) html += "總分加多 " + ov.gap + " 分先合格<br>";
-  else if (ov.gap) html += "總分再進步 " + ov.gap + " 分 → " + LEVEL_LABEL[ov.gapTo] + "<br>";
+  else if (ov.lift.length) html += "想升一級（只提升其中一卷）：" + ov.lift.join("；") + "<br>";
+  else if (ov.level === failOf(s) && ov.gap) html += "總分加多 " + ov.gap + " 分先合格<br>";
+  else if (ov.gap) html += "總分再進步 " + ov.gap + " 分 → " + labelOf(s, ov.gapTo) + "<br>";
   else html += "已達最高級別，繼續保持！<br>";
   detail.innerHTML = html;
 }
 
-function resetAll() {
-  DATA.papers.forEach((p, i) => document.getElementById("in" + i).value = "");
-  const url = new URL(location.href);
-  url.search = "";
-  history.replaceState(null, "", url);
+function updateShare() {
+  const params = new URLSearchParams();
+  params.set("s", current.id);
+  current.papers.forEach((p, i) => {
+    const v = document.getElementById("in" + i).value;
+    if (v) params.set("p" + (i + 1), v);
+  });
+  const url = location.origin + location.pathname + "?" + params.toString();
+  document.getElementById("shareBox").value = (location.protocol === "file:") ? location.pathname + "?" + params.toString() : url;
+}
+
+function selectSubject(id) {
+  current = DATA.subjects.find(s => s.id === id) || DATA.subjects[0];
+  renderTabs();
+  renderInputs();
+  renderTable();
   paint();
+  updateShare();
+  history.replaceState(null, "", "?" + new URLSearchParams({s: id}).toString());
+}
+
+function resetAll() {
+  current.papers.forEach((_p, i) => document.getElementById("in" + i).value = "");
+  paint();
+  updateShare();
 }
 
 document.addEventListener("DOMContentLoaded", () => {
   const params = new URLSearchParams(location.search);
-  DATA.papers.forEach((p, i) => {
-    const el = document.getElementById("in" + i);
-    const fromUrl = params.get("p" + (i + 1));
-    if (fromUrl !== null) el.value = fromUrl;
-    el.addEventListener("input", paint);
+  const ready = DATA.subjects.filter(subjectReady);
+  const wanted = params.get("s");
+  const pool = ready.length ? ready : DATA.subjects;
+  current = pool.find(s => s.id === wanted) || pool[0];
+
+  document.getElementById("subhead").textContent = DATA.exam_name + "｜cut off 更新：" + (DATA.updated_at || "未記錄");
+  document.getElementById("notice").innerHTML = ready.length
+    ? '<div class="ok">★ ' + DATA.exam_name + "｜已準備好 " + ready.length + " 個科目</div>"
+    : '<div class="warn">注意：未有任何科目填好 cut off，請老師先喺桌面版輸入並重新產生呢個檔案。</div>';
+
+  renderTabs();
+  renderInputs();
+  renderTable();
+  current.papers.forEach((p, i) => {
+    const v = params.get("p" + (i + 1));
+    if (v) document.getElementById("in" + i).value = v;
   });
-  if (!DATA.confirmed) document.getElementById("demoWarn").style.display = "block";
-  const view = overallCutoffs();
-  document.getElementById("methodNote").textContent = view
-    ? "整體 Level：" + view.source + "｜總滿分 " + fmt(view.full) + "。分數低於 Level 1 嘅 cut off 即屬 U。"
-    : "分數低於 Level 1 嘅 cut off 即屬 U。";
   paint();
+  updateShare();
 });
 </script>
 </body>
